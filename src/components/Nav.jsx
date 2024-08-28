@@ -9,13 +9,12 @@ function Nav() {
                 <h1>TÖL105G - Tölvugrafík Verkefni</h1>
                 <h2>Jonathan Jakub Otuoma - <a href="mailto:jjo1@hi.is">jjo1@hi.is</a></h2>
             </div>
-
             <div className={style.dropdown}>
-                <button className={style.dropbtn}>Dropdown</button>
+                <button className={style.dropbtn}>Verkefni</button>
                 <div className={style.dropdownContent}>
-                    <Link to="#">Link 1</Link>
-                    <Link to="#">Link 2</Link>
-                    <Link to="#">Link 3</Link>
+                    <Link to="#">Verkefni 1</Link>
+                    <Link to="#">Verkefni 2</Link>
+                    <Link to="#">Verkefni 3</Link>
                 </div>
             </div>
 

@@ -14,3 +14,8 @@ function App() {
 }
 
 export default App
+
+// --{ Til að uppfæra git }--
+// git add .
+// git commit -m "commit"
+// git push

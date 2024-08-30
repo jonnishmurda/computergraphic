@@ -6,6 +6,12 @@ header {
     justify-content: space-between;
 }
 
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 
 /* Dropdown Button */
 .dropbtn {
@@ -34,7 +40,7 @@ header {
   /* Links inside the dropdown */
   .dropdownContent a {
     color: black;
-    padding: 0.5rem 3rem;
+    padding: 0.5rem 2.5rem;
     text-decoration: none;
     display: block;
   }

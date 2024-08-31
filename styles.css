@@ -8,7 +8,7 @@
 }
 
 html {
-    background-color: rgb(245, 245, 245);
+    background-color: #f9f9f9;
 }
 
 body {
@@ -27,6 +27,11 @@ body {
     flex-wrap: wrap;
     flex-direction: column;
     align-items: center;
+}
+
+.box h2 {
+    margin-bottom: 2rem;
+    border-bottom: black solid 3px;
 }
 
 .links {
@@ -48,6 +53,5 @@ body {
 
 .link:hover {
     transition: 0.3s;
-    background: white;
-    box-shadow: 2px 2px black;
+    box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.1), -12px -12px 10px white;
 }

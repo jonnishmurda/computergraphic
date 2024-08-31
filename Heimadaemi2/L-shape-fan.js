@@ -13,12 +13,16 @@ window.onload = function init() {
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl) { alert("WebGL isn't available"); }
 
-    var vertices = new Float32Array([-0.75, -0.75,
-    -0.75, 0.75,
-    -0.35, 0.75,
-    -0.35, -0.35,
+
+    var vertices = new Float32Array([
+        -0.75, 0.75,
+        -0.35, 0.75,
+        -0.75, -0.75,
+        -0.35, -0.35,
+        -0.35, -0.75,
         0.45, -0.35,
-        0.45, -0.75]);
+        0.45, -0.75
+    ]);
 
     //  Configure WebGL
 
@@ -48,5 +52,5 @@ window.onload = function init() {
 
 function render() {
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, 6);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 7);
 }

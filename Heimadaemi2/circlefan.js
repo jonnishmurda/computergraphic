@@ -61,6 +61,11 @@ function createCirclePoints(cent, rad, k) {
     }
 }
 
+document.getElementById("slider").onchange = function (event) {
+    numCirclePoints = event.target.value;
+    render();
+};
+
 function render() {
 
     gl.clear(gl.COLOR_BUFFER_BIT);

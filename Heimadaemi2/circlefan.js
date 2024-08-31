@@ -10,7 +10,7 @@ var gl;
 
 // numCirclePoints er fjöldi punkta á hringnum
 // Heildarfjöldi punkta er tveimur meiri (miðpunktur + fyrsti punktur kemur tvisvar)
-var numCirclePoints = 20;
+var numCirclePoints = 3;
 
 var radius = 0.5;
 var center = vec2(0, 0);
@@ -44,6 +44,13 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    document.getElementById("slider").onchange = function (event) {
+        numCirclePoints = event.target.value;
+        createCirclePoints(center, radius, numCirclePoints);
+        gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+        render();
+    };
+
     render();
 }
 
@@ -60,11 +67,6 @@ function createCirclePoints(cent, rad, k) {
         points.push(p);
     }
 }
-
-document.getElementById("slider").onchange = function (event) {
-    numCirclePoints = event.target.value;
-    render();
-};
 
 function render() {
 

@@ -13,7 +13,7 @@ var maxNumPoints = 200;
 var index = 0;
 
 // stærð hrings
-var numCirclePoints = 50;
+var numCirclePoints = 100;
 
 
 

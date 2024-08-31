@@ -10,7 +10,7 @@ var gl;
 
 // numCirclePoints er fjöldi punkta á hringnum
 // Heildarfjöldi punkta er tveimur meiri (miðpunktur + fyrsti punktur kemur tvisvar)
-var numCirclePoints = 3;
+var numCirclePoints = 30;
 
 var radius = 0.5;
 var center = vec2(0, 0);

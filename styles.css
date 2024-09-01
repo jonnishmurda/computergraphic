@@ -20,7 +20,7 @@ header a {
     position: relative;
     text-decoration: none;
     color: #b0b0b0;
-
+    font-weight: 400;
 }
 
 header a::before {
@@ -99,6 +99,7 @@ main {
 .boxes {
     display: flex;
     flex-wrap: wrap;
+    border-bottom: #e0e0e0 3px solid;
 }
 
 .box {

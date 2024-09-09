@@ -49,6 +49,8 @@ window.onload = function init() {
     // Create 3 ducks at different heights and speeds
     spawnDucks();
 
+
+
     // Event listener for keyboard
     window.addEventListener("keydown", function (e) {
         switch (e.keyCode) {
@@ -88,6 +90,8 @@ function spawnDucks() {
         velocity: 0.014, // Fast speed
     });
 }
+
+
 
 function moveTriangle() {
     // Move each vertex of the triangle horizontally based on xmove

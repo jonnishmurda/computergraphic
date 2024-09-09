@@ -18,6 +18,8 @@ html {
 canvas {
     border: 10px solid rgb(87, 45, 0);
     border-radius: 10px;
+    height: 100vh;
+    
 }
 
 .motherboard {
@@ -25,15 +27,10 @@ canvas {
     border: 10px solid rgb(87, 45, 0);
     border-radius: 10px;
     padding: 1rem;
-    width: 1000;
 }
 
 .motherboard h1 {
     border-bottom: 5px rgb(87, 45, 0) solid;
-}
-
-.motherboard h3 {
-    margin-top: 1rem;
 }
 
 .motherboard .label {

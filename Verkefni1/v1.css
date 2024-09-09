@@ -45,9 +45,23 @@ canvas {
 
 .motherboard label {
     background-color: rgb(209, 209, 209);
-
     border: 3px black solid;
     border-radius: 5px;
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+
+.homebtn {
+    color: black;
+    text-decoration: none;
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 0 1rem;
+    position: relative;
+}
+
+.homebtn:hover{
+    color: white;
+    background: black;
+    transition: all 0.3s ease;
 }

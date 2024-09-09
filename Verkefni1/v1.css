@@ -45,9 +45,9 @@ canvas {
 
 .motherboard label {
     background-color: rgb(209, 209, 209);
+
     border: 3px black solid;
     border-radius: 5px;
-    padding: 0 0.5rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }

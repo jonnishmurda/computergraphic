@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'poppins';
+}
+
+
+html {
+    background: rgb(222, 222, 222);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    border: 10px solid rgb(87, 45, 0);
+    border-radius: 10px;
+}
+
+.motherboard {
+    background: white;
+    border: 10px solid rgb(87, 45, 0);
+    border-radius: 10px;
+    padding: 1rem;
+    width: 1000;
+}
+
+.motherboard h1 {
+    border-bottom: 5px rgb(87, 45, 0) solid;
+}
+
+.motherboard h3 {
+    margin-top: 1rem;
+}
+
+.motherboard .label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.motherboard label {
+    background-color: rgb(209, 209, 209);
+    border: 3px black solid;
+    border-radius: 5px;
+    padding: 0 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}

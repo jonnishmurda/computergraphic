@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="v1.css">
+</head>
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute vec4 vPosition;
+
+void
+main()
+{
+    gl_Position = vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+varying vec4 fColor;
+void
+main()
+{
+    gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="v1.js"></script>
+
+<body>
+
+    <canvas
+        style="background-image: url('https://img.freepik.com/free-vector/serene-dessert-landscape-clear-blue-sky_1308-160408.jpg?t=st=1725905642~exp=1725909242~hmac=6361f264c9d9cdef6d4f26ea07c18eb4b4431dc86b78a30cc60bba8040f0cf03&w=1380'); background-size: cover;"
+        id="gl-canvas" width="1000" height="700"></canvas>
+    <div class="motherboard">
+        <h1>Verkefni 1</h1>
+        <div>
+            <h3>Takkar</h3>
+            <div class="label">
+                <label>vinstri <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-arrow-left-circle">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 8 8 12 12 16"></polyline>
+                        <line x1="16" y1="12" x2="8" y2="12"></line>
+                    </svg></label>
+                <label>Hægri <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="feather feather-arrow-right-circle">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 16 16 12 12 8"></polyline>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg></label>
+                <label>skjóta</label>
+            </div>
+        </div>
+        <h3>Leiðbeiningar:</h3>
+        <p>Hreyfðu þríhyrninginn með hægri/vinstri örvum og notaðu "bil"/"space" hnappinn til að skjóta</p>
+        <a class="homebtn" href="../index.html">Heim</a>
+    </div>
+</body>
+
+
+</html>

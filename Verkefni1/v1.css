@@ -10,7 +10,8 @@
 
 html {
     background: rgb(222, 222, 222);
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
@@ -18,8 +19,8 @@ html {
 canvas {
     border: 10px solid rgb(87, 45, 0);
     border-radius: 10px;
-    height: 100vh;
-    
+    height: 90vh;
+
 }
 
 .motherboard {
@@ -31,6 +32,10 @@ canvas {
 
 .motherboard h1 {
     border-bottom: 5px rgb(87, 45, 0) solid;
+}
+
+.motherboard h3 {
+    margin-top: 1rem;
 }
 
 .motherboard .label {

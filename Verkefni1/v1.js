@@ -18,7 +18,7 @@ window.onload = function init() {
     if (!gl) { alert("WebGL isn't available"); }
 
     gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.clearColor(0, 0, 0, 0.0); // canvas gefið alpga gildi: 0 svo að hægt er að sjá bakgrunninn.
+    gl.clearColor(0, 1, 1, 0.0); // canvas gefið alpga gildi: 0 svo að hægt er að sjá bakgrunninn.
 
     var program = initShaders(gl, "vertex-shader", "fragment-shader");
     gl.useProgram(program);

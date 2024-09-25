@@ -30,7 +30,7 @@ window.onload = function init()
     colorCube();
 
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+    gl.clearColor( 0.8, 1.0, 1.0, 1.0 );
     
     gl.enable(gl.DEPTH_TEST);
 
@@ -108,7 +108,7 @@ function quad(a, b, c, d)
     var vertexColors = [
         [ 0.0, 0.0, 0.0, 1.0 ], //upprunalegum litum breytt
         [ 0.1, 0.1, 0.1, 1.0 ],  
-        [ 0.2, 0.2, 0.2, 1.0 ],  
+        [ 0.15, 0.15, 0.15, 1.0 ],  
         [ 0.1, 0.1, 0.1, 1.0 ],  
         [ 0.0, 0.0, 0.0, 1.0 ],  
         [ 0.1, 0.1, 0.1, 1.0 ],  
@@ -138,13 +138,13 @@ function render()
     // Build the letter H...
     // First the right leg
     mv1 = mult( mv, translate( -0.5, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.1, 1.1, 0.5 ) );
+    mv1 = mult( mv1, scalem( 0.05, 1.1, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     // Then the left leg
     mv1 = mult( mv, translate( 0.5, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.1, 1.1, 0.5 ) );
+    mv1 = mult( mv1, scalem( 0.05, 1.1, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
@@ -159,8 +159,8 @@ function render()
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
     
-    mv1 = mult( mv, translate( 0.0, 0.5, 0.0));
-    mv1 = mult( mv1, scalem( 1, 0.1, 0.5 ) );
+    mv1 = mult( mv, translate( 0.0, 0.525, 0.0));
+    mv1 = mult( mv1, scalem( 1, 0.05, 0.5 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 

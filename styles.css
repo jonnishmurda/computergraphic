@@ -103,10 +103,10 @@ main {
     border-bottom: #e0e0e0 3px solid;
 }
 
-@media(max-width: 750px){
+@media(max-width: 750px) {
     .links {
         display: grid;
-        grid-template-columns: 1fr ;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -157,4 +157,11 @@ main {
     to {
         width: 100%;
     }
+}
+
+canvas {
+    border: rgb(0.2, 0.2, 0.2) solid 5px;
+    border-radius: 10px;
+    margin: 1rem;
+    display: flex;
 }

@@ -126,16 +126,16 @@ main {
 
 .links {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 2rem;
     justify-content: center;
 }
 
 .link {
     display: flex;
-    height: 120px;
-    width: 120px;
+    height: 150px;
+    width: 150px;
     align-items: center;
     justify-content: center;
     text-decoration: none;

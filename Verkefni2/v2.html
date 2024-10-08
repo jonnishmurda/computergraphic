@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="v2.css">
+</head>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+attribute  vec4 vColor;
+varying vec4 fColor;
+
+uniform mat4 projection;
+uniform mat4 modelview;
+
+void main() 
+{
+    fColor = vColor;
+    gl_Position = projection * modelview * vPosition;
+} 
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+varying vec4 fColor;
+
+void main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MV.js"></script>
+<script type="text/javascript" src="v2.js"></script>
+
+<body>
+    <div class="game">
+        <h1>Conway's Game of life</h1>
+        <p>The Game of Life, also known as Conway's Game of Life or simply Life, is a cellular automaton devised by the
+            British mathematician John Horton Conway in 1970. It is a zero-player game, meaning that its
+            evolution
+            is determined by its initial state, requiring no further input. One interacts with the Game of Life by
+            creating
+            an initial configuration and observing how it evolves. It is Turing complete and can simulate a universal
+            constructor or any other Turing machine.</p>
+        <a target="#" href="https://en.wikipedia.org/wiki/Conway's_Game_of_Life">Wikipedia</a>
+    </div>
+    <div class="gamescreen">
+        <canvas id="gl-canvas" width="500" height="500">
+
+            <br />
+    </div>
+    <div class="description">
+        <h2>Lýsing á verkefni:</h2>
+        <p></p>
+    </div>
+</body>
+
+</html>

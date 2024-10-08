@@ -7,6 +7,7 @@ var grid = [];
 var nextGrid = [];
 
 var cubeSize = 0.1;
+var cubeSpacing = 0.01; // Space between cubes
 
 var movement = false;
 var spinX = 0;
@@ -21,7 +22,8 @@ var mvLoc;
 var program;
 
 var lastUpdateTime = 0;
-var updateInterval = 1000; // Update every 500 milliseconds (0.5 seconds)
+var updateInterval = 2000; // Update every 1000 milliseconds (1 second)
+var scalingSpeed = 0.05; // Speed of scaling animation
 
 // Define cube vertices and their corresponding colors for each face
 var vertices = [
@@ -75,7 +77,7 @@ window.onload = function init() {
     proLoc = gl.getUniformLocation(program, "projection");
     mvLoc = gl.getUniformLocation(program, "modelview");
 
-    var proj = perspective(50.0, 1.0, 0.2, 100.0);
+    var proj = perspective(25.0, 1.0, 0.2, 100.0);
     gl.uniformMatrix4fv(proLoc, false, flatten(proj));
 
     // Event listeners for mouse
@@ -99,8 +101,6 @@ window.onload = function init() {
         }
     });
 
-
-
     window.addEventListener("mousewheel", function (e) {
         if (e.wheelDelta > 0.0) {
             zDist += 0.2;
@@ -120,8 +120,11 @@ function initializeGrid() {
             grid[x][y] = [];
             nextGrid[x][y] = [];
             for (let z = 0; z < gridSize; z++) {
-                grid[x][y][z] = Math.random() < 0.2 ? 1 : 0;
-                nextGrid[x][y][z] = 0;
+                grid[x][y][z] = {
+                    active: Math.random() < 0.2 ? 1 : 0,
+                    scale: 0.0 // Initial scale is 0 for fade-in effect
+                };
+                nextGrid[x][y][z] = { active: 0, scale: 0.0 };
             }
         }
     }
@@ -154,11 +157,12 @@ function updateGrid() {
         for (let y = 0; y < gridSize; y++) {
             for (let z = 0; z < gridSize; z++) {
                 let neighbors = countNeighbors(x, y, z);
-                if (grid[x][y][z] === 1) {
-                    nextGrid[x][y][z] = (neighbors >= 5 && neighbors <= 7) ? 1 : 0;
+                if (grid[x][y][z].active === 1) {
+                    nextGrid[x][y][z].active = (neighbors >= 5 && neighbors <= 7) ? 1 : 0;
                 } else {
-                    nextGrid[x][y][z] = (neighbors === 6) ? 1 : 0;
+                    nextGrid[x][y][z].active = (neighbors === 6) ? 1 : 0;
                 }
+                nextGrid[x][y][z].scale = grid[x][y][z].scale;
             }
         }
     }
@@ -175,11 +179,26 @@ function countNeighbors(x, y, z) {
                 let nx = (x + i + gridSize) % gridSize;
                 let ny = (y + j + gridSize) % gridSize;
                 let nz = (z + k + gridSize) % gridSize;
-                count += grid[nx][ny][nz];
+                count += grid[nx][ny][nz].active;
             }
         }
     }
     return count;
+}
+
+function animateScale() {
+    for (let x = 0; x < gridSize; x++) {
+        for (let y = 0; y < gridSize; y++) {
+            for (let z = 0; z < gridSize; z++) {
+                let cube = grid[x][y][z];
+                if (cube.active === 1) {
+                    cube.scale = Math.min(cube.scale + scalingSpeed, 1.0);
+                } else {
+                    cube.scale = Math.max(cube.scale - scalingSpeed, 0.0);
+                }
+            }
+        }
+    }
 }
 
 function render(timestamp) {
@@ -189,21 +208,27 @@ function render(timestamp) {
     mv = mult(mv, rotateX(spinX));
     mv = mult(mv, rotateY(spinY));
 
-    // Centering the grid by translating each cube
-    var offset = (gridSize / 2 - 0.5) * cubeSize;
+    var offset = (gridSize / 2 - 0.5) * (cubeSize + cubeSpacing);
 
     for (let x = 0; x < gridSize; x++) {
         for (let y = 0; y < gridSize; y++) {
             for (let z = 0; z < gridSize; z++) {
-                if (grid[x][y][z] === 1) {
-                    var cubeMv = mult(mv, translate((x * cubeSize) - offset, (y * cubeSize) - offset, (z * cubeSize) - offset));
-                    cubeMv = mult(cubeMv, scalem(cubeSize, cubeSize, cubeSize));
+                let cube = grid[x][y][z];
+                if (cube.scale > 0.0) { // Only render if the scale is greater than 0
+                    var cubeMv = mult(mv, translate(
+                        (x * (cubeSize + cubeSpacing)) - offset, 
+                        (y * (cubeSize + cubeSpacing)) - offset, 
+                        (z * (cubeSize + cubeSpacing)) - offset
+                    ));
+                    cubeMv = mult(cubeMv, scalem(cube.scale * cubeSize, cube.scale * cubeSize, cube.scale * cubeSize));
                     gl.uniformMatrix4fv(mvLoc, false, flatten(cubeMv));
                     gl.drawElements(gl.TRIANGLES, numVertices, gl.UNSIGNED_BYTE, 0);
                 }
             }
         }
     }
+
+    animateScale();
 
     if (timestamp - lastUpdateTime >= updateInterval) {
         updateGrid();

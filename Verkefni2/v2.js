@@ -7,7 +7,7 @@ var grid = [];
 var nextGrid = [];
 
 var cubeSize = 0.1;
-var cubeSpacing = 0.01; // Space between cubes
+var cubeSpacing = 0.01; 
 
 var movement = false;
 var spinX = 0;
@@ -22,10 +22,10 @@ var mvLoc;
 var program;
 
 var lastUpdateTime = 0;
-var updateInterval = 2000; // Update every 1000 milliseconds (1 second)
-var scalingSpeed = 0.05; // Speed of scaling animation
+var updateInterval = 2000; 
+var scalingSpeed = 0.05; 
 
-// Define cube vertices and their corresponding colors for each face
+
 var vertices = [
     vec3(-0.5, -0.5, 0.5),
     vec3(-0.5, 0.5, 0.5),
@@ -85,7 +85,7 @@ window.onload = function init() {
         movement = true;
         origX = e.offsetX;
         origY = e.offsetY;
-        e.preventDefault(); // Disable drag and drop
+        e.preventDefault(); 
     });
 
     canvas.addEventListener("mouseup", function (e) {
@@ -122,7 +122,7 @@ function initializeGrid() {
             for (let z = 0; z < gridSize; z++) {
                 grid[x][y][z] = {
                     active: Math.random() < 0.2 ? 1 : 0,
-                    scale: 0.0 // Initial scale is 0 for fade-in effect
+                    scale: 0.0 
                 };
                 nextGrid[x][y][z] = { active: 0, scale: 0.0 };
             }
@@ -214,7 +214,7 @@ function render(timestamp) {
         for (let y = 0; y < gridSize; y++) {
             for (let z = 0; z < gridSize; z++) {
                 let cube = grid[x][y][z];
-                if (cube.scale > 0.0) { // Only render if the scale is greater than 0
+                if (cube.scale > 0.0) { 
                     var cubeMv = mult(mv, translate(
                         (x * (cubeSize + cubeSpacing)) - offset, 
                         (y * (cubeSize + cubeSpacing)) - offset, 

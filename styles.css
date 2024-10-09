@@ -80,6 +80,7 @@ header a:hover::before {
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
     display: block;
+    width: 100%;
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */

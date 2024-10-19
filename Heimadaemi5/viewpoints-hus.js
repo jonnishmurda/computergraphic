@@ -209,7 +209,7 @@ window.onload = function init() {
     canvas.addEventListener("mousemove", function (e) {
         if (movement) {
             spinY = (spinY + (e.offsetX - origX)) % 360;
-            spinX = (spinX + (origY - e.offsetY)) % 360;
+            spinX = (spinX + (e.offsetY - origY)) % 360;
             origX = e.offsetX;
             origY = e.offsetY;
         }

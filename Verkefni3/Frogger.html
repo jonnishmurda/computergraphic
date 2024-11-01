@@ -5,6 +5,8 @@
 	<meta charset="utf-8">
 	<title>Verkefni 3</title>
 	<link rel="stylesheet" href="Frogger.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 </head>
 
 <body>
@@ -19,6 +21,18 @@
 	</div>
 
 	<script src="js/three.js"></script>
+	<script>
+		let lastTouchEnd = 0;
+
+		document.addEventListener('touchend', function (event) {
+			const now = (new Date()).getTime();
+			if (now - lastTouchEnd <= 300) { // Threshold time for detecting double-tap
+				event.preventDefault(); // Prevent the zoom action
+			}
+			lastTouchEnd = now;
+		}, false);
+
+	</script>
 	<script>
 
 		var userXPos = 0.0;

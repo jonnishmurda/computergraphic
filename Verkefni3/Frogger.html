@@ -4,26 +4,20 @@
 <head>
 	<meta charset="utf-8">
 	<title>Verkefni 3</title>
-	<style>
-		/* Make canvas take the whole screen */
-		body,
-		html {
-			margin: 0;
-			overflow: hidden;
-			width: 100%;
-			height: 100%;
-		}
-
-		canvas {
-			display: block;
-			width: 100vw;
-			height: 100vh;
-		}
-	</style>
+	<link rel="stylesheet" href="Frogger.css">
 </head>
 
 <body>
 	<canvas id="c"></canvas>
+	<div class="controls">
+		<button id="upButton"><img src="./Svg/arrow-up.svg" alt="up arrow"></button>
+		<div>
+			<button id="leftButton"><img src="./Svg/arrow-left.svg" alt="left arrow"></button><button
+				id="downButton"><img src="./Svg/arrow-down (1).svg" alt="down arrow"></button><button
+				id="rightButton"><img src="./Svg/arrow-right.svg" alt="right arrow"></button>
+		</div>
+	</div>
+
 	<script src="js/three.js"></script>
 	<script>
 
@@ -215,44 +209,61 @@
 
 
 		// Handle keyboard input for movement with boundary checks
-		window.addEventListener("keydown", function (e) {
+		function moveFrog(direction) {
 			if (isFalling) return;  // If Frog is falling, ignore input to prevent movement
 
 			let newXPos = userXPos;
 			let newZPos = userZPos;
 
-			switch (e.keyCode) {
-				case 87:	// w - Move forward
-					newZPos -= userIncr; // Move up along the z-axis
+			switch (direction) {
+				case 'up': // Move forward (W key equivalent)
+					newZPos -= userIncr;
 					break;
-				case 83:	// s - Move backward
-					newZPos += userIncr; // Move down along the z-axis
+				case 'down': // Move backward (S key equivalent)
+					newZPos += userIncr;
 					break;
-				case 65:	// a - Move left
-					newXPos -= userIncr; // Move left along the x-axis
+				case 'left': // Move left (A key equivalent)
+					newXPos -= userIncr;
 					break;
-				case 68:	// d - Move right
-					newXPos += userIncr; // Move right along the x-axis
+				case 'right': // Move right (D key equivalent)
+					newXPos += userIncr;
 					break;
 			}
 
-			// Check if the new position is out of bounds (-6 to +6 on x and -6 to +6 on z)
 			if (newXPos < -6 || newXPos > 6 || newZPos < -6 || newZPos > 6) {
-				isFalling = true;  // Trigger the falling effect if out of bounds
-				// Move frog slightly out of bounds before it starts falling
-				if (newXPos < -6) newXPos = -7;
-				if (newXPos > 6) newXPos = 7;
-				if (newZPos < -6) newZPos = -7;
-				if (newZPos > 6) newZPos = 7;
+				isFalling = true;
 				userXPos = newXPos;
 				userZPos = newZPos;
 				Frog.position.set(userXPos, 0, userZPos);
 			} else {
-				// Update Frog's position if within bounds
 				userXPos = newXPos;
 				userZPos = newZPos;
 				Frog.position.set(userXPos, 0, userZPos);
 				checkIfOnWater();
+			}
+		}
+
+		// Event listeners for button clicks
+		document.getElementById('upButton').addEventListener('click', () => moveFrog('up'));
+		document.getElementById('downButton').addEventListener('click', () => moveFrog('down'));
+		document.getElementById('leftButton').addEventListener('click', () => moveFrog('left'));
+		document.getElementById('rightButton').addEventListener('click', () => moveFrog('right'));
+
+		// Keydown event for W, A, S, D keys
+		window.addEventListener("keydown", function (e) {
+			switch (e.keyCode) {
+				case 87: // W
+					moveFrog('up');
+					break;
+				case 83: // S
+					moveFrog('down');
+					break;
+				case 65: // A
+					moveFrog('left');
+					break;
+				case 68: // D
+					moveFrog('right');
+					break;
 			}
 		});
 

@@ -21,10 +21,13 @@
 	</div>
 	<section class="description">
 		<h2>Frogger</h2>
-		<h4>Controls:</h4><p>W A S D</p>
+		<h4>Controls:</h4>
+		<p>W A S D</p>
 		<p>Make it across the roads and the lake to finish the game!</p>
 	</section>
 	<script src="js/three.js"></script>
+	<script src="js/examples/js/loaders/OBJLoader.js"></script>
+	<script src="js/examples/js/loaders/MTLLoader.js"></script>
 	<script>
 		let lastTouchEnd = 0;
 
@@ -78,6 +81,7 @@
 		Frog.position.set(userXPos, 0, userZPos); // Initial position on the grass lane
 		Frog.castShadow = true; // Frog casts shadow
 		scene.add(Frog);
+
 
 		// Define specific colors for each lane
 		const laneColors = [
@@ -176,6 +180,12 @@
 		});
 
 
+		const objLoader = new THREE.OBJLoader();
+		objLoader.load('obj/frog.obj', (root) => {
+			root.position.y += -6;
+			root.rotation.x = Math.PI * -.5;
+			scene.add(root);
+		});
 
 
 		function checkIfOnWater() {

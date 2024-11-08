@@ -1,0 +1,32 @@
+mtlLoader.load('models/OBJ format/van.mtl', (mtl) => {
+			mtl.preload();
+			const objLoader = new THREE.OBJLoader();
+			objLoader.setMaterials(mtl);
+			objLoader.load('models/OBJ format/van.obj', (root) => {
+				root.position.set(1, 1, 1)
+				root.rotation.y = Math.PI * -.5;
+				scene.add(root);
+			});
+		});
+
+		mtlLoader.load('models/OBJ format/sedan.mtl', (mtl) => {
+			mtl.preload();
+			const objLoader = new THREE.OBJLoader();
+			objLoader.setMaterials(mtl);
+			objLoader.load('models/OBJ format/sedan.obj', (root) => {
+				root.position.set(1, 0, 1)
+				root.rotation.y = Math.PI * -.5;
+				scene.add(root);
+			});
+		});
+
+		mtlLoader.load('models/OBJ format/suv.mtl', (mtl) => {
+			mtl.preload();
+			const objLoader = new THREE.OBJLoader();
+			objLoader.setMaterials(mtl);
+			objLoader.load('models/OBJ format/suv.obj', (root) => {
+				root.position.set(5, 0, 1)
+				root.rotation.y = Math.PI * -.5;
+				scene.add(root);
+			});
+		});

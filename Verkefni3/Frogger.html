@@ -6,7 +6,6 @@
 	<title>Verkefni 3</title>
 	<link rel="stylesheet" href="Frogger.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 </head>
 
 <body>
@@ -14,100 +13,150 @@
 	<div class="controls">
 		<button id="upButton"><img src="./Svg/arrow-up.svg" alt="up arrow"></button>
 		<div>
-			<button id="leftButton"><img src="./Svg/arrow-left.svg" alt="left arrow"></button><button
-				id="downButton"><img src="./Svg/arrow-down (1).svg" alt="down arrow"></button><button
-				id="rightButton"><img src="./Svg/arrow-right.svg" alt="right arrow"></button>
+			<button id="leftButton"><img src="./Svg/arrow-left.svg" alt="left arrow"></button>
+			<button id="downButton"><img src="./Svg/arrow-down (1).svg" alt="down arrow"></button>
+			<button id="rightButton"><img src="./Svg/arrow-right.svg" alt="right arrow"></button>
 		</div>
 	</div>
 	<section class="description">
 		<h2>Frogger</h2>
 		<h4>Controls:</h4>
 		<p>W A S D</p>
-		<p>Make it across the roads and the lake to finish the game!</p>
+		<h4>Camera:</h4>
+		<p><img src="./Svg/arrow-left.svg" alt="left arrow"><img src="./Svg/arrow-up.svg" alt="up arrow"><img src="./Svg/arrow-down (1).svg" alt="down arrow"><img src="./Svg/arrow-right.svg" alt="right arrow"></p>
+		<p>Reyndu að komast yfir göturnar og ánna.</p>
+		<p>Hver fluga gefur 1 stig. ps. flugan er grái fljótandi kassinn á vellinum</p>
 	</section>
+	<p class="pointSection" id="points">Stig: 0</p>
 	<script src="js/three.js"></script>
 	<script src="js/examples/js/loaders/OBJLoader.js"></script>
 	<script src="js/examples/js/loaders/MTLLoader.js"></script>
 	<script>
-		let lastTouchEnd = 0;
 
-		document.addEventListener('touchend', function (event) {
-			const now = (new Date()).getTime();
-			if (now - lastTouchEnd <= 300) { // Threshold time for detecting double-tap
-				event.preventDefault(); // Prevent the zoom action
-			}
-			lastTouchEnd = now;
-		}, false);
-
-	</script>
-	<script>
-
+		let score = 0;
+		let fly = null;
 		var userXPos = 0.0;
 		var userZPos = 6.0;
-		var userIncr = 1;                // Size of forward/backward step
-		var isFalling = false;           // Flag to check if Frog is falling
+		var userIncr = 1;
+		var isFalling = false;
 		var fallSpeed = 0.05;
-
-		let isFlattening = false; // Flag to check if the Frog is flattening
-		const flattenSpeed = 0.1; // Speed at which the frog shrinks
-
+		var cameraposition = 5
+		var cameraAngle = 0;
+		const winningLaneZ = -6;
+		let isFlattening = false;
+		const flattenSpeed = 0.1;
 		const canvas = document.querySelector('#c');
-
-		// Initialize scene
+		const mtlLoader = new THREE.MTLLoader();
 		const scene = new THREE.Scene();
 		scene.background = new THREE.Color(0x000055);
-
-		// Initialize camera
 		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-		camera.position.set(0, 5, 10);  // Elevated position for better view
-
-		// Renderer with antialiasing and shadows enabled
+		camera.position.set(0, 5, 10);
 		const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-		// Adjust canvas size and aspect ratio on window resize
 		window.addEventListener('resize', () => {
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
 		});
+		var frogSize = 0.15
+		mtlLoader.load('models/frog/12268_banjofrog_v1_L3.mtl', (mtl) => {
+			mtl.preload();
+			const objLoader = new THREE.OBJLoader();
+			objLoader.setMaterials(mtl);
+			objLoader.load('models/frog/12268_banjofrog_v1_L3.obj', (frogModel) => {
+				frogModel.position.set(userXPos, -0.5, userZPos);
+				frogModel.rotation.x = Math.PI * -.5;
+				frogModel.rotation.z = Math.PI * -1;
+				frogModel.castShadow = true;
+				frogModel.receiveShadow = true;
+				frogModel.scale.set(frogSize, frogSize, frogSize);
+				scene.add(frogModel);
+				window.Frog = frogModel;
 
-		// Define geometry for Frog object
-		const frogGeometry = new THREE.BoxGeometry(1, 1, 1);
-		const frogMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-		const Frog = new THREE.Mesh(frogGeometry, frogMaterial);
-		Frog.position.set(userXPos, 0, userZPos); // Initial position on the grass lane
-		Frog.castShadow = true; // Frog casts shadow
-		scene.add(Frog);
+				function moveFrog(direction) {
+					if (isFalling) return;
+					let newXPos = userXPos;
+					let newZPos = userZPos;
+					switch (direction) {
+						case 'up': newZPos -= userIncr; break;
+						case 'down': newZPos += userIncr; break;
+						case 'left': newXPos -= userIncr; break;
+						case 'right': newXPos += userIncr; break;
+					}
+					if (newXPos < -6 || newXPos > 6 || newZPos < -6 || newZPos > 6) {
+						isFalling = true;
+						userXPos = newXPos;
+						userZPos = newZPos;
+						frogModel.position.set(userXPos, -0.5, userZPos);
+					} else {
+						userXPos = newXPos;
+						userZPos = newZPos;
+						frogModel.position.set(userXPos, -0.5, userZPos);
+						checkIfOnWater();
+					}
+				}
+			});
+		});
 
-
-		// Define specific colors for each lane
-		const laneColors = [
-			0x228B22, // Green (grass)
-			0x696969, 0x696969, 0x696969, // Gray (road)
-			0x228B22, // Green (grass)
-			0x4682B4, 0x4682B4, 0x4682B4, // Blue (water)
-			0x228B22, // Green (grass)
-			0x696969, 0x696969, 0x696969, // Gray (road)
-			0x228B22 // Green (grass)
-		];
-
-		// Generate lanes based on the laneColors array
-		for (let i = 0; i < laneColors.length; i++) {
-			const laneGeometry = new THREE.BoxGeometry(13, 1, 1); // Each lane is 13x1x1
-			const laneMaterial = new THREE.MeshStandardMaterial({ color: laneColors[i] }); // Color based on the laneColors array
-			const lane = new THREE.Mesh(laneGeometry, laneMaterial);
-			lane.position.set(0, -1, i - 6); // Offset position in z to stack lanes
-			lane.receiveShadow = true; // Lanes receive shadows
-			scene.add(lane); // Add each lane to the scene
+		function spawnFly() {
+			if (fly) {
+				scene.remove(fly);
+			}
+			const flyGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+			const flyMaterial = new THREE.MeshStandardMaterial({ color: 0x555555 });
+			fly = new THREE.Mesh(flyGeometry, flyMaterial);
+			const randomX = Math.floor(Math.random() * 13 - 6);
+			const randomZ = Math.floor(Math.random() * 10 - 6);
+			fly.position.set(randomX, 0, randomZ);
+			fly.castShadow = true;
+			scene.add(fly);
+			setTimeout(() => {
+				if (fly) {
+					scene.remove(fly);
+					fly = null;
+				}
+			}, 5000);
+		}
+		function updatePointsDisplay() {
+			document.getElementById("points").textContent = `Stig: ${score}`;
 		}
 
-		// Lighting with shadows enabled
+		function checkCollisionWithFly() {
+			if (!fly) return;
+			const frogBox = new THREE.Box3().setFromObject(Frog);
+			const flyBox = new THREE.Box3().setFromObject(fly);
+			if (frogBox.intersectsBox(flyBox)) {
+				scene.remove(fly);
+				fly = null;
+				score += 1;
+				updatePointsDisplay();
+			}
+		}
+
+		const laneColors = [
+			0x228B22,
+			0x696969, 0x696969, 0x696969,
+			0x228B22,
+			0x4682B4, 0x4682B4, 0x4682B4,
+			0x228B22,
+			0x696969, 0x696969, 0x696969,
+			0x228B22
+		];
+
+		for (let i = 0; i < laneColors.length; i++) {
+			const laneGeometry = new THREE.BoxGeometry(13, 1, 1);
+			const laneMaterial = new THREE.MeshStandardMaterial({ color: laneColors[i] });
+			const lane = new THREE.Mesh(laneGeometry, laneMaterial);
+			lane.position.set(0, -1, i - 6);
+			lane.receiveShadow = true;
+			scene.add(lane);
+		}
+
 		const light = new THREE.DirectionalLight(0xFFFFFF, 1);
 		light.position.set(5, 10, 7);
-		light.castShadow = true; // Light casts shadows
+		light.castShadow = true;
 		light.shadow.mapSize.width = 1024;
 		light.shadow.mapSize.height = 1024;
 		light.shadow.camera.near = 0.5;
@@ -116,189 +165,186 @@
 		light.shadow.camera.right = 10;
 		light.shadow.camera.top = 10;
 		light.shadow.camera.bottom = -10;
-		light.shadow.bias = -0.0005; // Offset to prevent shadow acne
-
+		light.shadow.bias = -0.0005;
 		scene.add(light);
 
-		// Logs array for floating logs on water lanes
 		const logs = [];
 		const logSpeed = 0.03;
-		const waterLanes = [5, 6, 7]; // Indices of water lanes
+		const waterLanes = [5, 6, 7];
 
-		// Create logs on water lanes with random sizes and spacing
 		waterLanes.forEach((laneIndex, i) => {
-			for (let j = -6; j <= 6; j += 6) { // Position logs farther apart in each lane
-				const logWidth = Math.random() * 2 + 1; // Random width between 2 and 4
+			for (let j = -6; j <= 6; j += 6) {
+				const logWidth = Math.random() * 2 + 1;
 				const logGeometry = new THREE.BoxGeometry(logWidth, 0.1, 1);
 				const logMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 });
 				const log = new THREE.Mesh(logGeometry, logMaterial);
-				log.position.set(j, -0.5, laneIndex - 6); // Position logs on the water lanes
-				log.castShadow = true; // Logs cast shadows
+				log.position.set(j, -0.5, laneIndex - 6);
+				log.castShadow = true;
 				log.receiveShadow = true;
-
-				// Set movement direction: lanes 5 and 7 move in the same direction, lane 6 moves in the opposite direction
 				log.userData = { direction: (laneIndex === 6) ? -1 : 1 };
 				scene.add(log);
-				logs.push(log); // Add log to logs array
+				logs.push(log);
 			}
 		});
-
 
 		const cars = [];
 		const carSpeed = 0.03;
-		const roadLanes = [1, 2, 3, 9, 10, 11]; // Indices of water lanes
+		const speedIncrement = 0.005;
+		const carGap = 5;
+		const roadLanes = [1, 2, 3, 9, 10, 11];
+		const carModels = [];
 
-		// Create logs on water lanes with random sizes and spacing
-		roadLanes.forEach((laneIndex) => {
-			const numCars = 2 + Math.floor(Math.random() * 2); // Randomize the number of cars per lane (either 2 or 3)
-			const colors = [0xaa0000, 0xababab, 0x0000aa, 0xeeee00];
-
-			for (let i = 0; i < numCars; i++) {
-				const carGeometry = new THREE.BoxGeometry(2, 1, 1);
-				const randomColor = colors[Math.floor(Math.random() * colors.length)];
-				const carMaterial = new THREE.MeshStandardMaterial({ color: randomColor });
-				const car = new THREE.Mesh(carGeometry, carMaterial);
-
-				// Randomize initial x-position to avoid alignment
-				const initialX = Math.floor(Math.random() * 12 - 6);
-				car.position.set(initialX, 0, laneIndex - 6); // Position the car on the specified lane
-				car.castShadow = true;
-				car.receiveShadow = true;
-
-				// Randomize speed for each car, making faster speeds possible on every lane
-				const randomSpeed = carSpeed * (1 + Math.random()); // Speed varies between 1x and 2x carSpeed
-
-				// Set movement direction and random speed
-				car.userData = {
-					direction: (laneIndex % 2 === 0) ? -1 : 1, // Alternate direction for variety
-					speed: randomSpeed // Use random speed for each car
-				};
-
-				scene.add(car);
-				cars.push(car); // Add car to cars array
-			}
+		function loadCarModel(path, mtlFile, objFile) {
+			return new Promise((resolve, reject) => {
+				mtlLoader.load(path + mtlFile, (mtl) => {
+					mtl.preload();
+					const objLoader = new THREE.OBJLoader();
+					objLoader.setMaterials(mtl);
+					objLoader.load(path + objFile, (model) => {
+						model.scale.set(0.75, 0.75, 0.75);
+						resolve(model);
+					});
+				});
+			});
+		}
+		Promise.all([
+			loadCarModel('models/OBJ format/', 'van.mtl', 'van.obj'),
+			loadCarModel('models/OBJ format/', 'suv-luxury.mtl', 'suv-luxury.obj'),
+			loadCarModel('models/OBJ format/', 'sedan.mtl', 'sedan.obj'),
+			loadCarModel('models/OBJ format/', 'sedan-sports.mtl', 'sedan-sports.obj'),
+			loadCarModel('models/OBJ format/', 'taxi.mtl', 'taxi.obj'),
+			loadCarModel('models/OBJ format/', 'truck.mtl', 'truck.obj'),
+			loadCarModel('models/OBJ format/', 'police.mtl', 'police.obj'),
+			loadCarModel('models/OBJ format/', 'suv.mtl', 'suv.obj')
+		]).then((models) => {
+			carModels.push(...models);
+			roadLanes.forEach((laneIndex, laneOrder) => {
+				const numCars = 2 + Math.floor(Math.random() * 2);
+				const laneSpeed = carSpeed + (laneOrder * speedIncrement);
+				let initialX = -6;
+				for (let i = 0; i < numCars; i++) {
+					const randomModelIndex = Math.floor(Math.random() * carModels.length);
+					const car = carModels[randomModelIndex].clone();
+					car.position.set(initialX, -0.5, laneIndex - 6);
+					if (laneIndex === 2 || laneIndex === 10) {
+						car.rotation.y = Math.PI * -0.5;
+					} else {
+						car.rotation.y = Math.PI * 0.5;
+					}
+					car.castShadow = true;
+					car.receiveShadow = true;
+					car.userData = {
+						direction: (laneIndex % 2 === 0) ? -1 : 1,
+						speed: laneSpeed
+					};
+					scene.add(car);
+					cars.push(car);
+					initialX += carGap;
+				}
+			});
 		});
-
-
-		const objLoader = new THREE.OBJLoader();
-		objLoader.load('obj/frog.obj', (root) => {
-			root.position.y += -6;
-			root.rotation.x = Math.PI * -.5;
-			scene.add(root);
-		});
-
 
 		function checkIfOnWater() {
 			const laneIndex = Math.round(Frog.position.z + 6);
 			if (laneIndex >= 0 && laneIndex < laneColors.length) {
-				if (laneColors[laneIndex] === 0x4682B4) {          // Check if the lane color is blue (water)
-					// Check if frog is on any log in the water lane
+				if (laneColors[laneIndex] === 0x4682B4) {
 					const onLog = logs.some(log => {
 						const logMinX = log.position.x - log.geometry.parameters.width / 2;
 						const logMaxX = log.position.x + log.geometry.parameters.width / 2;
 						return log.position.z === laneIndex - 6 && userXPos >= logMinX && userXPos <= logMaxX;
 					});
 					if (!onLog) {
-						isFalling = true;  // Trigger the falling effect if frog is not on a log
+						isFalling = true;
 					}
 				} else {
-					isFalling = false; // Reset falling if Frog is not on water
+					isFalling = false;
 				}
 			}
 		}
 
 		function checkIfHitByCar() {
-			const frogMinX = Frog.position.x - 0.5; // Frog's half width
+			const frogMinX = Frog.position.x - 0.5;
 			const frogMaxX = Frog.position.x + 0.5;
 			const frogZPos = Frog.position.z;
-
-			// Check collision with each car
 			const hitByCar = cars.some(car => {
-				const carMinX = car.position.x - 1; // Car's half width (assuming car width is 2)
+				const carMinX = car.position.x - 1;
 				const carMaxX = car.position.x + 1;
 				return frogZPos === car.position.z && frogMinX < carMaxX && frogMaxX > carMinX;
 			});
-
 			if (hitByCar && !isFlattening) {
-				isFlattening = true;  // Trigger the flattening effect if hit by a car
+				isFlattening = true;
 			}
 		}
 
-		// Function to reset the Frog's position and size after it has been flattened
 		function resetFrog() {
-			Frog.position.set(0, 0, 6); // Starting position
-			Frog.scale.set(1, 1, 1);    // Reset to original size
+			Frog.position.set(0, -0.5, 6);
+			Frog.scale.set(frogSize, frogSize, frogSize);
 			userXPos = 0;
 			userZPos = 6;
 			isFlattening = false;
-			isFalling = false;        // Reset flattening state
+			isFalling = false;
 		}
 
-
-
-		// Handle keyboard input for movement with boundary checks
 		function moveFrog(direction) {
-			if (isFalling) return;  // If Frog is falling, ignore input to prevent movement
-
+			if (isFalling) return;
 			let newXPos = userXPos;
 			let newZPos = userZPos;
-
 			switch (direction) {
-				case 'up': // Move forward (W key equivalent)
-					newZPos -= userIncr;
-					break;
-				case 'down': // Move backward (S key equivalent)
-					newZPos += userIncr;
-					break;
-				case 'left': // Move left (A key equivalent)
-					newXPos -= userIncr;
-					break;
-				case 'right': // Move right (D key equivalent)
-					newXPos += userIncr;
-					break;
+				case 'up': newZPos -= userIncr; break;
+				case 'down': newZPos += userIncr; break;
+				case 'left': newXPos -= userIncr; break;
+				case 'right': newXPos += userIncr; break;
 			}
-
 			if (newXPos < -6 || newXPos > 6 || newZPos < -6 || newZPos > 6) {
 				isFalling = true;
 				userXPos = newXPos;
 				userZPos = newZPos;
-				Frog.position.set(userXPos, 0, userZPos);
+				Frog.position.set(userXPos, -0.5, userZPos);
 			} else {
 				userXPos = newXPos;
 				userZPos = newZPos;
-				Frog.position.set(userXPos, 0, userZPos);
+				Frog.position.set(userXPos, -0.5, userZPos);
+				checkWinCondition();
 				checkIfOnWater();
 			}
 		}
 
-		// Event listeners for button clicks
+		function checkWinCondition() {
+			if (Frog.position.z <= winningLaneZ) {
+				alert(`Til hamingju, þú sigraðir erfiðasta leik í heimi stigin þín voru: ${score}`);
+				resetFrog();
+			}
+		}
+
 		document.getElementById('upButton').addEventListener('click', () => moveFrog('up'));
 		document.getElementById('downButton').addEventListener('click', () => moveFrog('down'));
 		document.getElementById('leftButton').addEventListener('click', () => moveFrog('left'));
 		document.getElementById('rightButton').addEventListener('click', () => moveFrog('right'));
 
-		// Keydown event for W, A, S, D keys
+		function updateCameraPosition() {
+			const distance = 10;
+			const height = cameraposition;
+			const offsetX = distance * Math.sin(cameraAngle);
+			const offsetZ = distance * Math.cos(cameraAngle);
+			camera.position.set(userXPos + offsetX, height, userZPos + offsetZ);
+			camera.lookAt(Frog.position);
+		}
+
 		window.addEventListener("keydown", function (e) {
 			switch (e.keyCode) {
-				case 87: // W
-					moveFrog('up');
-					break;
-				case 83: // S
-					moveFrog('down');
-					break;
-				case 65: // A
-					moveFrog('left');
-					break;
-				case 68: // D
-					moveFrog('right');
-					break;
+				case 87: moveFrog('up'); break;
+				case 83: moveFrog('down'); break;
+				case 65: moveFrog('left'); break;
+				case 68: moveFrog('right'); break;
+				case 37: cameraAngle -= 0.05; updateCameraPosition(); break;
+				case 39: cameraAngle += 0.05; updateCameraPosition(); break;
+				case 38: cameraposition += 0.5; updateCameraPosition(); break;
+				case 40: cameraposition -= 0.5; updateCameraPosition(); break;
 			}
 		});
 
 		const animate = function () {
 			requestAnimationFrame(animate);
-
-			// Move each log in its specified direction and reappear on the opposite side if it goes out of bounds
 			logs.forEach(log => {
 				log.position.x += log.userData.direction * logSpeed;
 				if (log.position.x > 7) {
@@ -307,8 +353,6 @@
 					log.position.x = 7;
 				}
 			});
-
-			// Move each car in its specified direction and speed, and reappear on the opposite side if it goes out of bounds
 			cars.forEach(car => {
 				car.position.x += car.userData.direction * car.userData.speed;
 				if (car.position.x > 7) {
@@ -317,8 +361,6 @@
 					car.position.x = 7;
 				}
 			});
-
-			// Check if the frog is on a log and move with the log
 			const laneIndex = Math.round(Frog.position.z + 6);
 			if (waterLanes.includes(laneIndex)) {
 				const onLog = logs.find(log => log.position.z === laneIndex - 6 &&
@@ -326,39 +368,34 @@
 					userXPos <= log.position.x + log.geometry.parameters.width / 2);
 				if (onLog) {
 					userXPos += onLog.userData.direction * logSpeed;
-					Frog.position.x = userXPos; // Move frog along with log
+					Frog.position.x = userXPos;
 				}
 			}
-
-			// Frog sinking animation
 			if (isFlattening) {
-				// Gradually reduce the frog's scale in the y-axis (height) to simulate flattening
 				Frog.scale.y = Math.max(0, Frog.scale.y - flattenSpeed);
 				if (Frog.scale.y <= 0) {
-					// Reset the frog's position and scale after it is completely flattened
 					resetFrog();
 				}
 			} else if (!isFalling) {
-				// Check for collision with cars if not falling or flattening
 				checkIfHitByCar();
 			}
-
-			// Frog sinking animation
 			if (isFalling) {
-				Frog.position.y -= fallSpeed;  // Gradually move Frog downwards
-				if (Frog.position.y < -1.5) {  // Stop falling when Frog reaches a certain depth
-					resetFrog(); // Reset the frog's position and size after sinking
-					Frog.position.y = 0;        // Reset y position
+				Frog.position.y -= fallSpeed;
+				if (Frog.position.y < -1.5) {
+					resetFrog();
+					Frog.position.y = 0;
 				}
 			}
-
-			// Update camera to follow Frog from behind and above
-			camera.position.set(userXPos, 5, userZPos + 8);  // Adjust camera position to follow
-			camera.lookAt(Frog.position);  // Camera looks at Frog's exact position
-
+			checkCollisionWithFly();
+			camera.position.set(userXPos, cameraposition, userZPos + 8);
+			camera.lookAt(Frog.position);
+			updateCameraPosition();
 			renderer.render(scene, camera);
 		};
 
+		window.addEventListener
+		spawnFly();
+		setInterval(spawnFly, 10000);
 		animate();
 	</script>
 </body>

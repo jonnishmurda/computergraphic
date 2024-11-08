@@ -37,6 +37,15 @@ canvas {
     }
 }
 
+p {
+    padding-bottom: 0.5rem;
+
+    & img {
+        background: white;
+        border-radius: 100%;
+    }
+}
+
 .description {
     position: absolute;
     top: 0;
@@ -48,9 +57,17 @@ canvas {
     width: 200px;
 }
 
+.pointSection {
+    position: absolute;
+    top: 0;
+    padding: 1rem;
+    color: white;
+    font-size: 32px;
+}
 
-@media (width <= 800px) {
-    .description{
+
+@media (width <=800px) {
+    .description {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -60,4 +77,4 @@ canvas {
         width: 100vw;
         height: 120px;
     }
-  }
+}

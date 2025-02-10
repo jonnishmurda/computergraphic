@@ -219,7 +219,7 @@
 		]).then((models) => {
 			carModels.push(...models);
 			roadLanes.forEach((laneIndex, laneOrder) => {
-				const numCars = 2 + Math.floor(Math.random() * 2);
+				const numCars = 1 + Math.floor(Math.random() * 2);
 				const laneSpeed = carSpeed + (laneOrder * speedIncrement);
 				let initialX = -6;
 				for (let i = 0; i < numCars; i++) {
@@ -273,6 +273,7 @@
 			});
 			if (hitByCar && !isFlattening) {
 				isFlattening = true;
+				
 			}
 		}
 
